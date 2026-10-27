@@ -1,0 +1,6 @@
+*.ipa
+*.zip
+*.deb
+.theos/
+packages/
+.DS_Store

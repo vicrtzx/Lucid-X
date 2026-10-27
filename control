@@ -1,0 +1,9 @@
+Package: com.vicrtzx.lucidx
+Name: Lucid X
+Depends: mobilesubstrate
+Version: 1.0
+Architecture: iphoneos-arm64
+Description: Ultra-battery-efficient, decluttered Twitter/X mod with Liquid Glass design for iOS
+Maintainer: Lucid
+Author: Lucid
+Section: Tweaks

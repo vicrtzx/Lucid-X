@@ -1,0 +1,267 @@
+# -*- coding: utf-8 -*-
+import re
+
+# Read en_strings.txt
+with open(r'C:\Users\gusta\.gemini\antigravity\scratch\lucid-x\en_strings.txt', 'r', encoding='utf-8') as f:
+    en_content = f.read()
+
+# Build comprehensive PT-BR translation dictionary
+translations_pt = {
+    # Headers & branding
+    "NFB_SETTINGS_TITLE": "Lucid X",
+    "NFB_SETTINGS_DETAIL": "Experiência Lucid para o Twitter/X. Máxima economia de bateria, zero anúncios e fluidez total no iPhone 17.",
+    
+    # Common actions & buttons
+    "CONFIRM_ALERT_MESSAGE": "Tem certeza de que deseja fazer isso?",
+    "YES_ACTION_LABEL": "Sim",
+    "NO_ACTION_LABEL": "Não",
+    "CANCEL_ACTION_LABEL": "Cancelar",
+    "CONTINUE_ACTION_LABEL": "Continuar",
+    "DONE": "Concluído",
+    "SAVE": "Salvar",
+    "SAVE_ACTION_LABEL": "Salvar",
+    "OK_ACTION_LABEL": "OK",
+    
+    # Settings Sections
+    "MODERN_SETTINGS_LAYOUT_TITLE": "Geral e Segurança",
+    "MODERN_SETTINGS_LAYOUT_SUBTITLE": "Bloqueio com Face ID, barra de navegação e ajustes gerais.",
+    "MODERN_SETTINGS_MEDIA_TITLE": "Fotos e Vídeos",
+    "MODERN_SETTINGS_MEDIA_SUBTITLE": "Download em qualidade máxima, carrossel e mídia.",
+    "MODERN_SETTINGS_APPEARANCE_TITLE": "Aparência",
+    "MODERN_SETTINGS_APPEARANCE_SUBTITLE": "Temas Liquid Glass, modo escuro puro e fontes.",
+    "MODERN_SETTINGS_TIMELINES_TITLE": "Linhas do Tempo",
+    "MODERN_SETTINGS_TIMELINES_SUBTITLE": "Remover anúncios, sugestões de quem seguir e poluição visual.",
+    "MODERN_SETTINGS_GROK_TITLE": "Grok (IA)",
+    "MODERN_SETTINGS_GROK_SUBTITLE": "Ocultar botões do Grok e controlar traduções automáticas.",
+    "MODERN_SETTINGS_PROFILES_TITLE": "Perfis",
+    "MODERN_SETTINGS_PROFILES_SUBTITLE": "Personalizar o que você vê nos perfis de usuários.",
+    "MODERN_SETTINGS_TWEETS_TITLE": "Tweets e Respostas",
+    "MODERN_SETTINGS_TWEETS_SUBTITLE": "Aparência dos tweets e remoção de recursos desnecessários.",
+    "MODERN_SETTINGS_CHAT_TITLE": "Mensagens Diretas (DMs)",
+    "MODERN_SETTINGS_CHAT_SUBTITLE": "Recursos avançados para o chat de mensagens.",
+    "MODERN_SETTINGS_SEARCH_TITLE": "Busca e Explorar",
+    "MODERN_SETTINGS_SEARCH_SUBTITLE": "Personalizar o menu da aba de pesquisa.",
+    "MODERN_SETTINGS_PRESETS_TITLE": "Predefinições",
+    "MODERN_SETTINGS_PRESETS_SUBTITLE": "Aplicar ou exportar configurações pré-definidas.",
+    "MODERN_SETTINGS_WEB_TITLE": "Web e Links",
+    "MODERN_SETTINGS_WEB_SUBTITLE": "Ajustar o comportamento de links externos e do navegador.",
+    "MODERN_SETTINGS_BRANDING_TITLE": "Identidade Visual",
+    "MODERN_SETTINGS_BRANDING_SUBTITLE": "Ajustar ícones, logotipos e nomes clássicos ou modernos.",
+    "MODERN_SETTINGS_EXPERIMENTAL_TITLE": "Recursos Experimentais",
+    "MODERN_SETTINGS_EXPERIMENTAL_SUBTITLE": "Testar funções em desenvolvimento.",
+    "MODERN_SETTINGS_DEBUG_TITLE": "Depuração",
+    "MODERN_SETTINGS_DEBUG_SUBTITLE": "Ferramentas de diagnóstico e inspeção.",
+    
+    "COOL_KIDS_SECTION_HEADER_TITLE": "Comunidade",
+    "SPECIAL_THANKS_SECTION_HEADER_TITLE": "Agradecimentos Especiais",
+    "FOLLOW_OFFICIAL_PAGE_SECTION_HEADER_TITLE": "Sobre o Lucid X",
+    "DEVELOPER_SECTION_HEADER_TITLE": "Desenvolvedores",
+    
+    # General Options
+    "HIDE_WHO_TO_FOLLOW_TITLE": "Ocultar 'Quem Seguir'",
+    "HIDE_WHO_TO_FOLLOW_DETAIL": "Remove todas as sugestões de contas para seguir.",
+    "NO_FOCUS_LOST_TITLE": "Manter Posição na Timeline",
+    "NO_FOCUS_LOST_DETAIL": "Impede o app de perder sua posição ao alternar para outro aplicativo.",
+    "HIDE_TIMELINE_PROMPTS_TITLE": "Sem Avisos na Timeline",
+    "HIDE_TIMELINE_PROMPTS_DETAIL": "Remove banners como 'Adicionar contatos' ou convites.",
+    "HIDE_BLOCKED_RETWEETS_TITLE": "Ocultar Retweets Bloqueados",
+    "HIDE_BLOCKED_RETWEETS_DETAIL": "Oculta retweets de contas que bloquearam você.",
+    "PADLOCK_TITLE": "Bloquear com Face ID",
+    "PADLOCK_DETAIL": "Exigir Face ID ou código de acesso para abrir o aplicativo.",
+    "NEW_INAPP_WEBVIEW_TITLE": "Navegador Interno Moderno",
+    "NEW_INAPP_WEBVIEW_DETAIL": "Usar a nova visualização web otimizada para abrir links.",
+    "ALWAYS_OPEN_SAFARI_TITLE": "Abrir Sempre no Safari",
+    "ALWAYS_OPEN_SAFARI_DETAIL": "Abre links direto no Safari nativo (mais rápido e gasta menos memória).",
+    "BLOCK_LINK_TRACKING_TITLE": "Bloquear Rastreamento de Links",
+    "BLOCK_LINK_TRACKING_DETAIL": "Abre links diretamente sem passar pelos redirecionamentos de t.co ou rastreadores.",
+    "STRIP_TRACKING_PARAMS_TITLE": "Remover Parâmetros de Espionagem",
+    "STRIP_TRACKING_PARAMS_DETAIL": "Remove automaticamente tags como utm_, s=20 e rastreadores dos links compartilhados.",
+    "SHARING_DOMAIN_TITLE": "Domínio de Compartilhamento",
+    
+    # Tweets
+    "TWEET_TO_IMAGE_TITLE": "Salvar Tweet como Imagem",
+    "TWEET_TO_IMAGE_DETAIL": "Pressione e segure o botão de compartilhar para exportar o tweet como imagem.",
+    "LIKE_CONFIRM_TITLE": "Confirmar Curtidas",
+    "LIKE_CONFIRM_DETAIL": "Pede confirmação antes de curtir um tweet (evita likes acidentais).",
+    "SHOW_QUOTE_NUMBERS_TITLE": "Mostrar Contagem de Citações",
+    "SHOW_QUOTE_NUMBERS_DETAIL": "Mostra o número de citações e retweets recebidos.",
+    "SHOW_UNROUNDED_QUOTE_NUMBERS_TITLE": "Contagem Exata de Citações",
+    "SHOW_UNROUNDED_QUOTE_NUMBERS_DETAIL": "Exibe o número exato sem arredondamento.",
+    "POST_INTERACTIONS_COUNTS_TITLE": "Citações: %@  Retweets: %@",
+    "POST_INTERACTIONS_UNROUNDED_COUNTS_TITLE": "Citações: %lld  Retweets: %lld",
+    "USE_TENOR_GIFS_TITLE": "Usar GIFs do Tenor",
+    "USE_TENOR_GIFS_DETAIL": "Substitui os GIFs padrão pelo catálogo ampliado do Tenor.",
+    "TWEET_CONFIRM_TITLE": "Confirmar Publicação",
+    "TWEET_CONFIRM_DETAIL": "Pede confirmação antes de postar um tweet.",
+    "SHOW_POLL_RESULTS_TITLE": "Ver Resultados de Enquetes",
+    "SHOW_POLL_RESULTS_DETAIL": "Exibe os resultados antes de você precisar votar.",
+    "RESTORE_TWEET_LABELS_TITLE": "Exibir Origem do Tweet",
+    "RESTORE_TWEET_LABELS_DETAIL": "Mostra de qual cliente o tweet foi enviado (ex: Twitter for iPhone).",
+    "SHOW_ACCOUNT_LOCATION_TITLE": "Mostrar Localização da Conta",
+    "SHOW_ACCOUNT_LOCATION_DETAIL": "Exibe a localização do autor no rodapé do tweet.",
+    "HIDE_BLUE_VERIFIED_TITLE": "Ocultar Selos Azuis Pagos",
+    "HIDE_BLUE_VERIFIED_DETAIL": "Oculta o selo de verificação de contas pagas (mantém marcas e governos).",
+    "HIDE_VIEW_COUNT_TITLE": "Ocultar Visualizações",
+    "HIDE_VIEW_COUNT_DETAIL": "Oculta a contagem de views sob os tweets.",
+    "DISABLE_MEDIA_CAROUSEL_TITLE": "Desativar Carrossel de Mídia",
+    "DISABLE_MEDIA_CAROUSEL_DETAIL": "Restaura a visualização clássica de múltiplas fotos.",
+    "HIDE_BOOKMARK_BUTTON_TITLE": "Ocultar Botão Salvar",
+    "HIDE_BOOKMARK_BUTTON_DETAIL": "Remove o ícone de itens salvos dos tweets.",
+    "HIDE_DOWNVOTE_BUTTON_TITLE": "Ocultar Botão Não Curti",
+    "HIDE_DOWNVOTE_BUTTON_DETAIL": "Remove o botão de voto negativo.",
+    "DISABLE_SENSITIVE_TWEET_WARNINGS_TITLE": "Sem Avisos de Conteúdo Sensível",
+    "BYPASS_AGE_VERIFICATION_TITLE": "Ignorar Verificação de Idade",
+    "BYPASS_AGE_VERIFICATION_DETAIL": "Pula a tela de confirmação de idade para conteúdos restritos.",
+    "HIDE_GROK_ANALYZE_TITLE": "Ocultar Botão Analisar do Grok",
+    "HIDE_GROK_SIDEBAR_TITLE": "Ocultar Grok na Barra Lateral",
+    "HIDE_GROK_CREATE_TITLE": "Ocultar Criação com Grok",
+    "HIDE_GROK_CREATE_DETAIL": "Remove opções de gerar mídias com a IA do Grok.",
+    "DISABLE_AUTO_TRANSLATE_TITLE": "Desativar Tradução Automática",
+    "DISABLE_AUTO_TRANSLATE_DETAIL": "Nunca traduz posts ou biografias automaticamente.",
+    "SQUARE_AVATARS_TITLE": "Fotos de Perfil Quadradas",
+    "SQUARE_AVATARS_DETAIL": "Fotos de perfil quadradas no estilo clássico.",
+    "DEFAULT_REPLY_SORTING_TITLE": "Ordem Padrão das Respostas",
+    "DEFAULT_REPLY_SORTING_DETAIL": "Escolha como ordenar os comentários nos tweets.",
+    "REPLY_SORTING_TITLE": "Ocultar Seletor de Respostas",
+    "REPLY_SORTING_DETAIL": "Remove o botão de ordenação das respostas.",
+    "RESTORE_REPLY_CONTEXT_TITLE": "Restaurar Contexto de Respostas",
+    "RESTORE_REPLY_CONTEXT_DETAIL": "Mostra quem está sendo respondido sob os tweets.",
+    
+    # Chat / DMs
+    "HIDE_TYPING_INDICATOR_TITLE": "Ocultar 'Digitando...'",
+    "HIDE_TYPING_INDICATOR_DETAIL": "Não envia o indicador de digitação para outras pessoas nas conversas.",
+    "DOWNLOAD_VOICE_MESSAGES_TITLE": "Baixar Áudios de Voz",
+    "DOWNLOAD_VOICE_MESSAGES_DETAIL": "Salve mensagens de voz tocando com 2 dedos no áudio.",
+    "BLOCK_SCREENSHOT_DETECTION_TITLE": "Bloquear Detecção de Print",
+    "BLOCK_SCREENSHOT_DETECTION_DETAIL": "Tire capturas de tela em chats sem notificar a outra pessoa.",
+    
+    # Profiles
+    "FOLLOW_CONFIRM_TITLE": "Confirmar ao Seguir",
+    "FOLLOW_CONFIRM_DETAIL": "Pede confirmação antes de seguir uma conta.",
+    "COPY_PROFILE_INFO_TITLE": "Copiar Detalhes do Perfil",
+    "COPY_PROFILE_INFO_DETAIL": "Copie arroba, biografia e links com um toque.",
+    "FAST_BLOCK_TITLE": "Bloqueio Rápido",
+    "FAST_BLOCK_DETAIL": "Bloqueia ou silencia contas sem a caixa de confirmação.",
+    "DISABLE_ARTICLES_TITLE": "Ocultar Aba Artigos",
+    "DISABLE_ARTICLES_DETAIL": "Remove a aba de artigos dos perfis.",
+    "DISABLE_HIGHLIGHTS_TITLE": "Ocultar Aba Destaques",
+    "DISABLE_HIGHLIGHTS_DETAIL": "Remove a aba de destaques dos perfis.",
+    "HIDE_FOLLOW_BUTTON_TITLE": "Ocultar Botão Seguir nos Tweets",
+    "HIDE_FOLLOW_BUTTON_DETAIL": "Remove o botão seguir exibido diretamente nos tweets.",
+    "HIDE_MESSAGE_BUTTON_TITLE": "Ocultar Botão Mensagem",
+    "HIDE_MESSAGE_BUTTON_DETAIL": "Remove o botão de enviar DM nos tweets.",
+    "RESTORE_FOLLOW_BUTTON_TITLE": "Ocultar Botão Inscrever-se",
+    "RESTORE_FOLLOW_BUTTON_DETAIL": "Remove o botão de assinatura paga.",
+    "SHOW_UNROUNDED_COUNTS_TITLE": "Contadores Exatos",
+    "SHOW_UNROUNDED_COUNTS_DETAIL": "Mostra o número exato de seguidores e tweets sem arredondar para 'mil' ou 'mi'.",
+    
+    # Search
+    "NO_HISTORY_TITLE": "Sem Histórico de Busca",
+    "NO_HISTORY_DETAIL": "Não salva histórico de termos pesquisados.",
+    "HIDE_TREND_VIDEOS_TITLE": "Ocultar Vídeos em Alta",
+    "HIDE_TREND_VIDEOS_DETAIL": "Remove carrosséis de vídeos populares da aba de busca.",
+    
+    # Photos and Videos
+    "AUTO_HIGHEST_LOAD_TITLE": "Carregar Mídia em Alta Definição",
+    "AUTO_HIGHEST_LOAD_DETAIL": "Carrega fotos e vídeos sempre na maior qualidade disponível.",
+    "DISABLE_VIDEO_CAPTIONS_TITLE": "Sem Legendas Automáticas",
+    "FORCE_TWEET_FULL_FRAME_TITLE": "Imagens Expandidas",
+    "RESTORE_VIDEO_TIMESTAMP_TITLE": "Tempo do Vídeo",
+    "RESTORE_VIDEO_TIMESTAMP_DETAIL": "Exibe o tempo decorrido no reprodutor imersivo.",
+    "TAP_TO_PAUSE_TITLE": "Toque com 2 Dedos para Pausar",
+    "TAP_TO_PAUSE_DETAIL": "Toque duplo com dois dedos em qualquer vídeo para pausar.",
+    "DISABLE_IMMERSIVE_SCROLL_TITLE": "Sem Rolagem Imersiva de Vídeos",
+    "DISABLE_VIDEO_DOCKING_TITLE": "Desativar Encaixe de Vídeo",
+    "DISABLE_VIDEO_DOCKING_DETAIL": "Impede o modo PiP automático ao arrastar o vídeo.",
+    
+    # Adblock & Blue
+    "HIDE_PROMOTED_TITLE": "Bloquear Todos os Anúncios",
+    "HIDE_PROMOTED_DETAIL": "Remove posts promovidos, anúncios de vídeo e tendências pagas.",
+    "UNDO_TWEET_TITLE": "Desfazer Tweet",
+    "DOWNLOAD_VIDEOS_TITLE": "Download de Mídia",
+    "DOWNLOAD_VIDEOS_DETAIL": "Baixe vídeos ou GIFs diretamente pelo menu do tweet.",
+    "DOWNLOAD_HIGHEST_QUALITY_TITLE": "Sempre na Maior Resolução",
+    "DOWNLOAD_HIGHEST_QUALITY_DETAIL": "Pula a seleção de resolução e salva o melhor MP4 direto.",
+    "DOWNLOAD_ALL_VIDEOS_TITLE": "Baixar Todos os Vídeos",
+    "DOWNLOAD_ALL_VIDEOS_DETAIL": "Adiciona opção de baixar todos os vídeos de um tweet.",
+    "UPLOAD_FULL_HD_VIDEOS_TITLE": "Upload em Full HD (1080p)",
+    "UPLOAD_FULL_HD_VIDEOS_DETAIL": "Permite enviar vídeos em 1080p sem perda de qualidade.",
+    "DIRECT_SAVE_TITLE": "Salvar Direto no Fotos",
+    "DIRECT_SAVE_DETAIL": "Salva as mídias direto no app Fotos sem precisar de menu extra.",
+    "HIDE_PREMIUM_OFFER_TITLE": "Sem Avisos de Assinatura",
+    "HIDE_PREMIUM_OFFER_DETAIL": "Remove banners de 'Assine o Premium' e verificação paga.",
+    "THEME_OPTION_TITLE": "Alterar Tema",
+    "APP_ICON_TITLE": "Alterar Ícone do App",
+    "CUSTOM_TAB_BAR_OPTION_TITLE": "Personalizar Barra Inferior",
+    
+    # Layout
+    "HIDE_SPACES_TITLE": "Ocultar Barra de Spaces",
+    "NO_TAB_BAR_HIDING_TITLE": "Barra de Navegação Sempre Visível",
+    "NO_TAB_BAR_HIDING_DETAIL": "Não oculta a barra inferior ao rolar a página.",
+    "HIDE_CUSTOM_TIMELINES_TITLE": "Ocultar Timelines Personalizadas",
+    "HIDE_CUSTOM_TIMELINES_DETAIL": "Remove o botão de adicionar abas na timeline.",
+    "RESTORE_REFRESH_SOUNDS_TITLE": "Sons ao Puxar para Atualizar",
+    "HIDE_TRENDS_TITLE": "Ocultar Conteúdo de Tendências",
+    "HIDE_TRENDS_DETAIL": "Exibe apenas a barra de busca, ocultando notícias e tópicos sugeridos.",
+    "TAB_BAR_THEMING_TITLE": "Barra de Navegação Colorida",
+    "TAB_BAR_THEMING_DETAIL": "Aplica a cor de destaque na aba ativa.",
+    "DISABLE_RTL_TITLE": "Forçar Layout Esquerda para Direita",
+    "DISABLE_RTL_DETAIL": "Força o layout padrão ocidental.",
+    "SHOW_SCROLL_INDICATOR_TITLE": "Barra de Rolagem Sempre Visível",
+    "CUSTOM_FONTS_TITLE": "Fontes Personalizadas",
+    "CUSTOM_FONTS_DETAIL": "Selecione uma fonte personalizada para o aplicativo.",
+    "REGULAR_FONTS_PICKER_OPTION_TITLE": "Escolher Fonte",
+    "BOLD_FONTS_PICKER_OPTION_TITLE": "Escolher Fonte Negrito",
+    
+    # Labs & Debug
+    "REPLY_IN_WEBVIEW_TITLE": "Responder via Web (Fallback)",
+    "REPLY_IN_WEBVIEW_DETAIL": "Método alternativo caso o envio nativo falhe ao responder.",
+    "FLEX_TWITTER_TITLE": "Modo de Depuração (FLEX)",
+    "FLEX_TWITTER_DETAIL": "Ativa o inspetor de views para diagnóstico técnico.",
+    
+    # Download Popups
+    "DOWNLOAD_MENU_TITLE": "\nEscolha a qualidade do vídeo",
+    "FETCHING_PROGRESS_TITLE": "Carregando...",
+    "DOWNLOAD_AS_GIF_OPTION_TITLE": "Baixar como GIF",
+    "DOWNLOAD_AS_MP4_OPTION_TITLE": "Baixar como MP4",
+    "DOWNLOAD_ALL_VIDEOS_OPTION_TITLE": "Baixar todos os vídeos",
+    "PROGRESS_DOWNLOADING_STATUS_TITLE": "Baixando mídia...",
+    
+    # Copy Menu
+    "COPY_PROFILE_INFO_MENU_OPTION_1": "Copiar biografia",
+    "COPY_PROFILE_INFO_MENU_OPTION_2": "Copiar arroba (@)",
+    "COPY_PROFILE_INFO_MENU_OPTION_3": "Copiar nome",
+    "COPY_PROFILE_INFO_MENU_OPTION_4": "Copiar website",
+    "COPY_PROFILE_INFO_MENU_OPTION_5": "Copiar localização",
+    "COPY_PROFILE_INFO_MENU_OPTION_6": "Copiar link do perfil",
+    "COPY_PROFILE_INFO_MENU_OPTION_7": "Copiar ID numérico",
+    "COPY_PROFILE_INFO_MENU_OPTION_8": "Copiar data de criação",
+    
+    # Themes & Tab
+    "THEME_SETTINGS_NAVIGATION_TITLE": "Temas",
+    "THEME_SETTINGS_NAVIGATION_DETAIL": "Personalize o esquema de cores para sua experiência no Lucid X.",
+    "CUSTOM_TAB_BAR_SETTINGS_NAVIGATION_TITLE": "Navegação Personalizada",
+    "CUSTOM_TAB_BAR_GRID_DETAIL": "Toque para adicionar ou remover abas. Arraste para reordenar.",
+    "CUSTOM_TAB_BAR_RESET_MESSAGE": "Tem certeza de que deseja restaurar as abas para o padrão?"
+}
+
+# Generate pt-BR Localizable.strings
+pt_lines = ['/* Language: pt-BR - Lucid X */\n']
+for k, v in translations_pt.items():
+    v_escaped = v.replace('"', '\\"')
+    pt_lines.append(f'"{k}" = "{v_escaped}";\n')
+
+with open(r'C:\Users\gusta\.gemini\antigravity\scratch\lucid-x\Localizable_pt.strings', 'w', encoding='utf-8') as out:
+    out.writelines(pt_lines)
+
+# Generate en Localizable.strings (customized with Lucid X branding)
+en_lucid = en_content
+en_lucid = en_lucid.replace('"NFB_SETTINGS_TITLE" = "NeoFreeBird";', '"NFB_SETTINGS_TITLE" = "Lucid X";')
+en_lucid = en_lucid.replace('"NFB_SETTINGS_DETAIL" = "Tweak your Twitter. Hide ads, enable Blue features, and much more.";', '"NFB_SETTINGS_DETAIL" = "Lucid X Experience. Maximum battery life, zero ads, and ultra-smooth performance on iPhone 17.";')
+en_lucid = en_lucid.replace('"FOLLOW_OFFICIAL_PAGE_SECTION_HEADER_TITLE" = "Follow NeoFreeBird";', '"FOLLOW_OFFICIAL_PAGE_SECTION_HEADER_TITLE" = "About Lucid X";')
+
+with open(r'C:\Users\gusta\.gemini\antigravity\scratch\lucid-x\Localizable_en.strings', 'w', encoding='utf-8') as out:
+    out.write(en_lucid)
+
+print(f"Generated PT-BR with {len(translations_pt)} translated keys.")
+print("Generated EN Lucid with updated branding.")

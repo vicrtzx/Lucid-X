@@ -1,0 +1,64 @@
+name: Build Lucid X IPA
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build Lucid X v1.0
+    runs-on: macos-14
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Install System Dependencies
+        run: |
+          brew install dpkg ldid
+          python3 -m pip install --break-system-packages git+https://github.com/asdfzxcvbn/pyzule-rw.git
+
+      - name: Setup Theos & SDKs
+        run: |
+          git clone --recursive https://github.com/theos/theos.git ~/theos
+          echo "THEOS=$HOME/theos" >> $GITHUB_ENV
+          curl -Lo master.zip https://github.com/theos/sdks/archive/master.zip
+          unzip -q master.zip
+          mv sdks-master/*.sdk ~/theos/sdks/
+          rm -rf master.zip sdks-master
+          ls -la ~/theos/sdks/
+
+      - name: Compile Lucid X Tweak
+        run: |
+          make clean
+          make package FINALPACKAGE=1
+          ls -la packages/
+
+      - name: Download Base X 12.33 IPA
+        run: |
+          echo "Downloading NeoFreeBird-sideloaded-X_7.2.0_12.33.ipa..."
+          curl -L --retry 3 -o BaseX.ipa "https://github.com/NeoFreeBird/app/releases/download/v7.2.0/NeoFreeBird-sideloaded-X_7.2.0_12.33.ipa"
+          ls -lh BaseX.ipa
+
+      - name: Brand and Localize as Lucid X
+        run: |
+          python3 patch_lucid_x.py
+
+      - name: Inject LucidX Tweak with Cyan
+        run: |
+          DEB_FILE=$(ls packages/*.deb | head -n 1)
+          echo "Found compiled tweak package: $DEB_FILE"
+          cyan -i BaseX-branded.ipa -f "$DEB_FILE" -o Lucid-X-v1.0.ipa -u -d
+          ls -lh Lucid-X-v1.0.ipa
+
+      - name: Upload Lucid-X-v1.0 IPA Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Lucid-X-v1.0
+          path: Lucid-X-v1.0.ipa
+          if-no-files-found: error
